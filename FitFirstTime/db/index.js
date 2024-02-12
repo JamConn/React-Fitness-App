@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 // Connect to database
+
+
 mongoose.connect(process.env.MONGO_DB);
 const db = mongoose.connection;
 
