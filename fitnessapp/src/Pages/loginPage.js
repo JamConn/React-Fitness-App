@@ -1,46 +1,76 @@
-import React, { useContext, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from '../Contexts/authContext';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
 
-const LoginPage = props => {
-    const context = useContext(AuthContext);
+const { SetCookie, DeleteCookie, hasCookie } = require('../Utility/CookieManager.js');
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+const LoginPage = () => { 
+  const [user, setUser] = useState({ haslogin: false, accessToken: '' });
 
-    const login = () => {
-        context.authenticate(userName, password);
-    };
-
-    let location = useLocation();
-
-    // Set 'from' to path where browser is redirected after a successful login - either / or the protected path user requested
-    const { from } = location.state ? { from: location.state.from.pathname } : { from: "/" };
-
-    if (context.isAuthenticated === true) {
-        return <Navigate to={from} />;
+  useEffect(() => {
+    const cookieObject = hasCookie();
+    if (cookieObject.haslogin) {
+      setUser({
+        ...cookieObject
+      });
     }
+  }, []);
+  function login(response) {
+    if (response.wc.access_token) {
+      setUser({
+        ...response.profileObj,
+        haslogin: true,
+        accessToken: response.wc.access_token
+      })
+    }
+    SetCookie({
+      ...response.profileObj,
+      accessToken: response.wc.access_token
+    });
+  }
 
-    return (
-        <>
+  function logout(response) {
+    setUser({ haslogin: false, accessToken: '' });
+    DeleteCookie(['accessToken', 'email', 'givenName', 'familyName', 'imageUrl', 'name', 'googleId']);
+  }
 
-            <h2>Login page</h2>
-            <p>You must log in to view the protected pages </p>
-            <input id="username" placeholder="user name" onChange={e => {
-                setUserName(e.target.value);
-            }}></input><br />
-            <input id="password" type="password" placeholder="password" onChange={e => {
-                setPassword(e.target.value);
-            }}></input><br />
-            {/* Login web form  */}
-            <button onClick={login}>Log in</button>
-            <p>Not Registered?
-                <Link to="/signup">No Account? Sign Up!</Link></p>
+  function handleLoginFailure(response) {
+    alert('Failed to log in')
+  }
+  function handleLogoutFailure(response) {
+    alert('Failed to log out')
+  }
+  return (
+    <div className="App">
+      <Navbar collapseOnSelect expand="lg" style={{backgroundColor: '#272727'}}>
+        <Navbar.Brand href="#home" style={{color: '#ffffff'}}>Fit Me Up</Navbar.Brand>
+        <Nav className="mr-auto">
+        </Nav>
+        <Nav>
+          {user.haslogin ?
+            <GoogleLogout
+              clientId={CLIENT_ID}
+              buttonText='Logout'
+              onLogoutSuccess={logout}
+              onFailure={handleLogoutFailure}
+            >
+            </GoogleLogout> : <GoogleLogin
+              clientId={CLIENT_ID}
+              buttonText='Login'
+              onSuccess={login}
+              onFailure={handleLoginFailure}
+              cookiePolicy={'single_host_origin'}
+              responseType='code,token'
+              scope = { 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.location.read'}
+            />
+          }
+        </Nav>
+      </Navbar>
 
-        </>
-    );
-};
+    </div>
+  );
+}
 
 export default LoginPage;
