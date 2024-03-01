@@ -16,8 +16,7 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize the database when needed
-initializeDatabase();
+
 
 mongoose.connect(process.env.MONGO_DB, {
   useNewUrlParser: true,
