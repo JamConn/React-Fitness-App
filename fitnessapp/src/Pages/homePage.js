@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
+import Grid from '@mui/material/Grid'; // Import Grid component
+import WorkoutCard from '../Components/WorkoutCard'; // Import WorkoutCard component
 
 const Home = ({ user }) => {
   const [fitData, setFitData] = useState({});
@@ -49,6 +51,27 @@ const Home = ({ user }) => {
     ],
   };
 
+  const workoutData = [
+    {
+      name: 'Leg Day Workout',
+      description: 'A comprehensive workout for your legs.',
+      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo1',
+      bodyPart: 'Legs',
+    },
+    {
+      name: 'Upper Body Strength Training',
+      description: 'Build strength in your upper body with these exercises.',
+      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo2',
+      bodyPart: 'Upper Body',
+    },
+    {
+      name: 'Core Workout for Abs',
+      description: 'Strengthen your core with this intense ab workout.',
+      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo3',
+      bodyPart: 'Core',
+    },
+  ];
+
   const chartOptions = {
     scales: {
       x: {
@@ -64,6 +87,13 @@ const Home = ({ user }) => {
     <div>
       <h1>Welcome, {user.fullName}!</h1>
       <Bar data={chartData} options={chartOptions} />
+      <Grid container spacing={3}>
+        {workoutData.map((workout, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <WorkoutCard {...workout} />
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 };
