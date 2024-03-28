@@ -23,8 +23,6 @@ async function initializeDatabase() {
     console.log(`${users.length} users loaded`);
   } catch (error) {
     console.error('Error initializing database:', error);
-  } finally {
-    await mongoose.disconnect();
   }
 }
 

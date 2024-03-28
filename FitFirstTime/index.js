@@ -6,6 +6,8 @@ import { google } from 'googleapis';
 import User from './models/User';
 import initializeDatabase from './initialise-dev/initDevDB';
 import dotenv from 'dotenv';
+import { OAuth2Client } from 'google-auth-library'; 
+
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ db.once('open', () => {
   console.log(`Database connected to ${db.name} on ${db.host}`);
 });
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 // OAuth 2.0 setup for Google API
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -45,7 +49,8 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 // Generate the consent URL
-const SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read'];
+const SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read',   'https://www.googleapis.com/auth/userinfo.profile',  'https://www.googleapis.com/auth/userinfo.email'];
+
 const consentUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
   scope: SCOPES,
@@ -66,12 +71,26 @@ app.get('/auth/google/callback', async (req, res) => {
     // Exchange the authorization code for tokens
     const { tokens } = await oauth2Client.getToken(code);
 
+        // Verify the ID token to get user info
+        const ticket = await client.verifyIdToken({
+          idToken: tokens.id_token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        console.log('ID Token Payload:', payload);
+        const email = payload.email;
+        const name = payload.name;
+        console.log('email:', email);
+        console.log('name:', name); 
+
     // Validate the token with Google
     const response = await axios.get('https://www.googleapis.com/oauth2/v3/tokeninfo', {
       params: { access_token: tokens.access_token },
     });
 
-    const { aud, email, name } = response.data;
+
+
 
     // Save user information to MongoDB
     let user = await User.findOne({ email });
