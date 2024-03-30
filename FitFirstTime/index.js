@@ -159,6 +159,24 @@ app.get('/fit-data/heart-points', async (req, res) => {
   // Similar implementation as steps route
 });
 
+app.get('/get-user-data', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    // Fetch user data including fitness token from the database
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    console.log('User data:', user);
+    res.json({ email: user.email,  fullName: user.fullName, fitDataToken: user.fitDataToken });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 // Helper function to parse Google Fit data
 const parseFitData = (fitData) => {
   return {
