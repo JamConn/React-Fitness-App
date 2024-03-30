@@ -2,20 +2,20 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Pages/loginPage';
 import Home from './Pages/homePage';
-import { UserProvider } from './Context/AuthContext'; // Import the UserProvider
+import { UserProvider } from './Context/AuthContext';
 
 function App() {
   
   useEffect(() => {
-    // Function to clear stored tokens
+
     const clearStoredTokens = () => {
-      localStorage.removeItem('accessToken'); // Assuming you're using localStorage
+      localStorage.removeItem('accessToken'); 
     };
 
-    // Check if stored tokens exist
+
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      // If tokens exist, clear them
+
       clearStoredTokens();
     }
   }, []);

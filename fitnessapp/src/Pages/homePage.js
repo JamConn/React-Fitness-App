@@ -4,13 +4,18 @@ import { Bar } from 'react-chartjs-2';
 import Grid from '@mui/material/Grid';
 import WorkoutCard from '../Components/WorkoutCard';
 import { UserContext } from '../Context/AuthContext';
+import Chart from 'chart.js/auto';
+import {CategoryScale} from 'chart.js'; 
+Chart.register(CategoryScale);
 
 const Home = () => {
   const { userData } = useContext(UserContext); // Access userData from UserContext
 
   const [fitData, setFitData] = useState({});
+  const [chart, setChart] = useState(null);
 
   useEffect(() => {
+    console.log('Fetching chart data...');
     const fetchData = async () => {
       try {
         if (!userData) return; // Ensure userData exists before making the request
@@ -28,6 +33,13 @@ const Home = () => {
     };
 
     fetchData();
+
+    // Unmount chart if needed
+    return () => {
+      if (chart) {
+        chart.destroy();
+      }
+    };
   }, [userData]);
 
   // Example chart data
@@ -55,6 +67,8 @@ const Home = () => {
     ],
   };
 
+  console.log(chartData);
+
   const workoutData = [
     {
       name: 'Leg Day Workout',
@@ -79,6 +93,7 @@ const Home = () => {
   const chartOptions = {
     scales: {
       x: {
+        type: 'category', 
         beginAtZero: true,
       },
       y: {

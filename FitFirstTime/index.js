@@ -140,6 +140,9 @@ app.get('/fit-data/steps', async (req, res) => {
       },
     });
 
+    console.log('Steps data response:', fitDataResponse.data); 
+
+
     // Process steps data and send it to the client
     const stepsData = parseFitData(fitDataResponse.data);
     res.json(stepsData);
@@ -179,12 +182,16 @@ app.get('/get-user-data', async (req, res) => {
 
 // Helper function to parse Google Fit data
 const parseFitData = (fitData) => {
-  return {
+  const parsedData = {
     dates: fitData.bucket.map((bucket) => new Date(bucket.startTimeMillis).toLocaleDateString()),
     steps: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].intVal),
     calories: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].fpVal),
     heartPoints: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].intVal),
   };
+
+  console.log('Parsed Fit data:', parsedData); 
+
+  return parsedData;
 };
 
 app.listen(PORT, () => {
