@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography } from '@mui/material';
+import Navbar from '../Components/Navigation'; 
 
 const WorkoutPage = () => {
   const workoutData = [
@@ -54,6 +55,8 @@ const WorkoutPage = () => {
   ];
 
   return (
+    <>
+    <Navbar />
     <Grid container spacing={3}>
       {workoutData.map((workout, index) => (
         <Grid item xs={12} sm={6} md={3} key={index}>
@@ -70,6 +73,7 @@ const WorkoutPage = () => {
         </Grid>
       ))}
     </Grid>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 import React from 'react';
+import Button from '@mui/material/Button';
+import './loginPage.css'; 
 
-
-const Login = ({ onLogin }) => {
+const LoginPage = ({ onLogin }) => {
   const handleLogin = async () => {
     try {
       window.location.href = 'http://localhost:5000/auth/google';
@@ -11,11 +12,16 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <button onClick={handleLogin}>Login with Google</button>
+    <div className="login-container">
+      <div className="background-image"></div> 
+      <div className="login-content">
+        <h1>Login Page</h1>
+        <Button variant="contained" color="primary" onClick={handleLogin}>
+          Login with Google
+        </Button>
+      </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;

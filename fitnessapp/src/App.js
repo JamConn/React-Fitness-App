@@ -1,30 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Pages/loginPage';
 import Home from './Pages/homePage';
 import { UserProvider } from './Context/AuthContext';
+import Navbar from './Components/Navigation';
+import WorkoutPage from './Pages/workoutPage';
 
 function App() {
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
-
-    const clearStoredTokens = () => {
-      localStorage.removeItem('accessToken'); 
-    };
-
-
     const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-
-      clearStoredTokens();
-    }
+    setIsLoggedIn(!!accessToken);
   }, []);
 
   return (
     <Router>
       <UserProvider>
+        {isLoggedIn && <Navbar />}
         <Routes>
           <Route path="/home" element={<Home />} />
+          <Route path="/workouts" element={<WorkoutPage />} />
           <Route path="/" element={<Login />} />
         </Routes>
       </UserProvider>

@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import WorkoutCard from '../Components/WorkoutCard';
 import { UserContext } from '../Context/AuthContext';
 import Chart from 'chart.js/auto';
+import Navbar from '../Components/Navigation'; 
 import {CategoryScale} from 'chart.js'; 
 Chart.register(CategoryScale);
 
@@ -103,6 +104,8 @@ const Home = () => {
   };
 
   return (
+    <>
+    <Navbar /> 
     <div>
       <h1>Welcome</h1>
       <Bar data={chartData} options={chartOptions} />
@@ -114,6 +117,7 @@ const Home = () => {
         ))}
       </Grid>
     </div>
+    </>
   );
 };
 
