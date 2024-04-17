@@ -5,6 +5,7 @@ import Home from './Pages/homePage';
 import { UserProvider } from './Context/AuthContext';
 import Navbar from './Components/Navigation';
 import WorkoutPage from './Pages/workoutPage';
+import ListUsers from './Pages/listUsers';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/listUsers" element={<ListUsers />} />
           <Route path="/" element={<Login />} />
         </Routes>
       </UserProvider>

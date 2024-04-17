@@ -19,7 +19,7 @@ const Home = () => {
     console.log('Fetching chart data...');
     const fetchData = async () => {
       try {
-        if (!userData) return; // Ensure userData exists before making the request
+        if (!userData) return; // Ensures userData exists before making the request
         // Fetch Google Fit data using user's token
         const response = await axios.get(`http://localhost:5000/fit-data/steps?email=${userData.email}`, {
           headers: {

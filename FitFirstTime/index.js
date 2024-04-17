@@ -180,6 +180,19 @@ app.get('/get-user-data', async (req, res) => {
   }
 });
 
+//Search Route filtering through Online User database
+
+app.get('/searchUsers', async (req, res) => {
+  const { name } = req.query;
+  try {
+    const users = await User.find({ fullName: { $regex: name, $options: 'i' } }); 
+    res.json(users);
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Helper function to parse Google Fit data
 const parseFitData = (fitData) => {
   const parsedData = {

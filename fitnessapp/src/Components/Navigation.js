@@ -1,8 +1,8 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, InputBase, Link, Grid } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { AppBar, Toolbar, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import logo from '../img/logo.jpg';
+import SearchBar from './SearchBar';
 
 
 
@@ -26,16 +26,7 @@ const Navbar = () => {
             </Grid>
             <Grid item xs />
             <Grid item>
-              <SearchContainer>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <InputBase
-                  placeholder="Search..."
-                  inputProps={{ 'aria-label': 'search' }}
-                  style={{ color: 'inherit' }}
-                />
-              </SearchContainer>
+            <SearchBar />
             </Grid>
           </Grid>
         </Toolbar>
