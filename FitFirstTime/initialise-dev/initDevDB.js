@@ -13,14 +13,21 @@ async function initializeDatabase() {
   try {
     await mongoose.connect(process.env.MONGO_DB);
     
-    // Drop collections
-    await User.collection.drop().catch(err => console.log('User collection not found'));
-    
-    // Create initial users
-    await User.create(users);
+    // Fetch users from the online collection
+    const onlineUsers = await User.find();
+
+    // Check if each online user already exists in the local database
+    for (const onlineUser of onlineUsers) {
+      const existingUser = await User.findOne({ email: onlineUser.email });
+      if (!existingUser) {
+        // If the user does not exist locally, save it
+        await User.create(onlineUser);
+      }
+    }
 
     console.log('Database initialized');
-    console.log(`${users.length} users loaded`);
+    console.log(`${onlineUsers.length} users loaded from the online collection`);
+
   } catch (error) {
     console.error('Error initializing database:', error);
   }
