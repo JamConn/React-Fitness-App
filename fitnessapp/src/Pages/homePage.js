@@ -11,11 +11,25 @@ import {CategoryScale} from 'chart.js';
 Chart.register(CategoryScale);
 
 const Home = () => {
-  const { userData } = useContext(UserContext);
+
+  const { userData, fetchUserData } = useContext(UserContext); 
+  const { workouts, fetchWorkouts } = useContext(WorkoutsContext); 
 
   const [fitData, setFitData] = useState({});
-  const [workouts, setWorkouts] = useState([]);
   const [chart, setChart] = useState(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userEmail = urlParams.get('email');
+    console.log('User email from URL parameters:', userEmail);
+  
+    if (userEmail) {
+      console.log('User data received:', userData);
+      fetchUserData(userEmail);
+    }
+  }, [fetchUserData]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +43,7 @@ const Home = () => {
           },
         });
         setFitData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching Fit data:', error);
       }
@@ -43,22 +58,13 @@ const Home = () => {
     };
   }, [userData, chart]);
 
+
+
   useEffect(() => {
-    const fetchUserWorkouts = async () => {
-      try {
-        if (!userData) return;
-
-        // Fetch workouts for the current user
-        const response = await axios.get(`/users/${userData.email}/workouts`);
-        setWorkouts(response.data.workouts);
-      } catch (error) {
-        console.error('Error fetching workouts:', error);
-      }
-    };
-
-    fetchUserWorkouts();
-  }, [userData]);
-
+    if (userData) {
+      fetchWorkouts(userData.email); 
+    }
+  }, [userData, fetchWorkouts]);
 
   
   // Example chart data
@@ -88,26 +94,6 @@ const Home = () => {
 
   console.log(chartData);
 
-  const workoutData = [
-    {
-      name: 'Leg Day Workout',
-      description: 'A comprehensive workout for your legs.',
-      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo1',
-      bodyPart: 'Legs',
-    },
-    {
-      name: 'Upper Body Strength Training',
-      description: 'Build strength in your upper body with these exercises.',
-      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo2',
-      bodyPart: 'Upper Body',
-    },
-    {
-      name: 'Core Workout for Abs',
-      description: 'Strengthen your core with this intense ab workout.',
-      videoUrl: 'https://www.youtube.com/watch?v=sampleVideo3',
-      bodyPart: 'Core',
-    },
-  ];
 
   const chartOptions = {
     scales: {
@@ -123,12 +109,12 @@ const Home = () => {
 
   return (
     <>
-    <Navbar /> 
-    <div>
-      <h1>Welcome</h1>
-      <Bar data={chartData} options={chartOptions} />
-      <Grid container spacing={3}>
-          {workouts.length > 0 ? (
+      <Navbar />
+      <div>
+        <h1>Welcome</h1>
+        <Bar data={chartData} options={chartOptions} />
+        <Grid container spacing={3}>
+          {workouts && workouts.length > 0 ? (
             workouts.map((workout, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <WorkoutCard {...workout} />

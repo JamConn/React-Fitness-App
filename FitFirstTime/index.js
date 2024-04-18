@@ -162,15 +162,16 @@ app.get('/fit-data/heart-points', async (req, res) => {
   // Similar implementation as steps route
 });
 
+//User Data retrieved fixed
 app.get('/get-user-data', async (req, res) => {
   const { email } = req.query;
   console.log('Requested email:', email); 
 
   try {
-    // Fetch user data including fitness token from the database
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log('User not found');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     console.log('User data:', user); 

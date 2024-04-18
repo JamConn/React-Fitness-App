@@ -1,11 +1,11 @@
 import React, { useContext }  from 'react';
 import { Grid, Card, CardContent, Typography, Button  } from '@mui/material';
 import Navbar from '../Components/Navigation'; 
-import { WorkoutsContext } from '../Context/WorkoutContext';
+import AddWorkoutButton from '../Components/AddWorkoutButton';
+
 
 const WorkoutPage = () => {
 
-  const { workouts, addWorkout } = useContext(WorkoutsContext);
 
 
   const workoutData = [
@@ -83,9 +83,6 @@ const WorkoutPage = () => {
     },
   ];
 
-  const handleAddWorkout = (workout) => {
-    addWorkout(workout);
-  };
 
   return (
     <>
@@ -104,7 +101,10 @@ const WorkoutPage = () => {
                 <Typography variant="body2" component="div">
                   Body Part: {workout.bodyPart}
                 </Typography>
-                <Button variant="contained" onClick={() => handleAddWorkout(workout)}>Add Workout</Button>
+                <Typography variant="body2" component="div">
+                  <strong>Video URL:</strong> <a href={workout.videoUrl} target="_blank" rel="noopener noreferrer">{workout.videoUrl}</a>
+                </Typography>
+                <AddWorkoutButton workout={workout} />
               </CardContent>
             </Card>
           </Grid>
