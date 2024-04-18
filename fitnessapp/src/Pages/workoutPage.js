@@ -2,11 +2,12 @@ import React, { useContext }  from 'react';
 import { Grid, Card, CardContent, Typography, Button  } from '@mui/material';
 import Navbar from '../Components/Navigation'; 
 import AddWorkoutButton from '../Components/AddWorkoutButton';
+import { WorkoutsContext } from '../Context/WorkoutContext';
 
 
 const WorkoutPage = () => {
 
-
+  const { workouts } = useContext(WorkoutsContext);
 
   const workoutData = [
     {
@@ -84,11 +85,17 @@ const WorkoutPage = () => {
   ];
 
 
+
+  // Filter out workouts that the user has already liked
+  const filteredWorkouts = workoutData.filter(workout => {
+    return !workouts.some(userWorkout => userWorkout.name === workout.name);
+  });
+
   return (
     <>
       <Navbar />
       <Grid container spacing={3}>
-        {workoutData.map((workout, index) => (
+        {filteredWorkouts.map((workout, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Card>
               <CardContent>

@@ -2,9 +2,9 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import AddWorkoutButton from './AddWorkoutButton';
+import AddWorkoutButton from './AddWorkoutButton'; // Import AddWorkoutButton component
 
-const WorkoutCard = ({ name, description, videoUrl, bodyPart }) => {
+const WorkoutCard = ({ name, description, videoUrl, bodyPart, showAddButton }) => {
   return (
     <Card>
       <CardContent>
@@ -20,8 +20,8 @@ const WorkoutCard = ({ name, description, videoUrl, bodyPart }) => {
         <Typography variant="body2" color="text.secondary">
           Body Part: {bodyPart}
         </Typography>
+        {showAddButton && <AddWorkoutButton />}
       </CardContent>
-      <AddWorkoutButton workout={{ name, description, videoUrl, bodyPart }} />
     </Card>
   );
 };

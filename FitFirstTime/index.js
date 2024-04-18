@@ -234,6 +234,31 @@ app.post('/users/workouts', async (req, res) => {
   }
 });
 
+
+//Delete workout route
+app.delete('/users/workouts/:workoutName', async (req, res) => {
+  const { email } = req.query;
+  const { workoutName } = req.params;
+  console.log('Deleting workout:', workoutName, 'for user:', email);
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.workouts = user.workouts.filter(workout => workout.name !== workoutName);
+    await user.save();
+
+    console.log('Workout deleted successfully');
+    res.status(200).json({ message: 'Workout deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting workout:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Helper function to parse Google Fit data
 const parseFitData = (fitData) => {
   const parsedData = {

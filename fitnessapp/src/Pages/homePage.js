@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import Grid from '@mui/material/Grid';
 import WorkoutCard from '../Components/WorkoutCard';
+import DeleteWorkoutButton from '../Components/DeleteWorkoutButton'; 
 import { UserContext } from '../Context/AuthContext';
 import { WorkoutsContext } from '../Context/WorkoutContext';
 import Chart from 'chart.js/auto';
@@ -112,12 +113,13 @@ const Home = () => {
       <Navbar />
       <div>
         <h1>Welcome</h1>
-        <Bar data={chartData} options={chartOptions} />
+        <Bar data={chartData} options={{}} />
         <Grid container spacing={3}>
           {workouts && workouts.length > 0 ? (
             workouts.map((workout, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <WorkoutCard {...workout} />
+                <DeleteWorkoutButton workoutName={workout.name} />
               </Grid>
             ))
           ) : (
