@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import AddWorkoutButton from './AddWorkoutButton'; // Import AddWorkoutButton component
+import AddWorkoutButton from './AddWorkoutButton'; 
 
 const WorkoutCard = ({ name, description, videoUrl, bodyPart, showAddButton }) => {
   return (

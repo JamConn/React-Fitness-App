@@ -5,7 +5,7 @@ import axios from 'axios';
 import { UserContext } from '../Context/AuthContext'; // Import UserContext
 
 const DeleteWorkoutButton = ({ workoutName }) => {
-  const { userData } = useContext(UserContext); // Get user data from context
+  const { userData } = useContext(UserContext);
 
   const handleDelete = async () => {
     try {
@@ -13,9 +13,9 @@ const DeleteWorkoutButton = ({ workoutName }) => {
         console.error('User data not available');
         return;
       }
-      const { email } = userData; // Extract user's email
+      const { email } = userData; 
       await axios.delete(`http://localhost:5000/users/workouts/${workoutName}`, {
-        params: { email }, // Pass email as a query parameter
+        params: { email },
       });
       console.log('Workout deleted successfully');
     } catch (error) {

@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import './loginPage.css'; 
+import logo from '../img/logo.png'; // Import the logo image
+import './loginPage.css';
 
 const LoginPage = ({ onLogin }) => {
   const handleLogin = async () => {
@@ -12,13 +13,16 @@ const LoginPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
-      <div className="background-image"></div> 
-      <div className="login-content">
-        <h1>Login Page</h1>
-        <Button variant="contained" color="primary" onClick={handleLogin}>
-          Login with Google
-        </Button>
+    <div className="login-page-container">
+      <div className="login-container">
+        <div className="background-image"></div>
+        <div className="login-content">
+          <img src={logo} alt="Logo" style={{ width: '50%' }}  /> 
+          <h1>First Time Fit</h1>
+          <Button variant="contained" color="primary" onClick={handleLogin}>
+            Login with Google
+          </Button>
+        </div>
       </div>
     </div>
   );

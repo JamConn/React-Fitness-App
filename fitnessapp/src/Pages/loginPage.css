@@ -1,29 +1,48 @@
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
 .login-page-container {
-    position: relative;
-    height: 100vh; 
-  }
-  
-  .login-container {
-    background-image: url('../img/background.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .login-text {
-    color: lightblue;
-  }
-  
-  .login-content {
-    position: relative;
-    z-index: 1; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
+  position: relative;
+  height: 100vh;
+  margin: 0; /* Remove any default margin */
+  overflow: hidden; /* Ensure the background image takes up the entire page */
+}
+
+.login-container {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #333; /* Dark grey background color */
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5; /* Adjust the opacity */
+}
+
+.logo {
+  width: 50%; /* Shrink the logo by half */
+}
+
+.login-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center; /* Center the login text */
+  color: lightblue; /* Change login text color to light blue */
+}

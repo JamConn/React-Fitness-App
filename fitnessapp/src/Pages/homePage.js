@@ -112,7 +112,8 @@ const Home = () => {
     <>
       <Navbar />
       <div>
-        <h1>Welcome</h1>
+        <h1>Welcome, {userData.fullName}</h1>
+        <img src={userData.profilePicture} alt="Profile" />
         <Bar data={chartData} options={{}} />
         <Grid container spacing={3}>
           {workouts && workouts.length > 0 ? (

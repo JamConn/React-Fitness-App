@@ -81,6 +81,7 @@ app.get('/auth/google/callback', async (req, res) => {
         console.log('ID Token Payload:', payload);
         const email = payload.email;
         const name = payload.name;
+        const picture = payload.picture;
         console.log('email:', email);
         console.log('name:', name); 
 
@@ -97,11 +98,12 @@ app.get('/auth/google/callback', async (req, res) => {
 
     if (!user) {
       // If user doesn't exist, create a new one
-      user = new User({ email, fullName: name, fitDataToken: tokens.access_token });
+      user = new User({ email, fullName: name, fitDataToken: tokens.access_token, profilePicture: picture  });
       await user.save();
     } else {
       // Update the Fit API token if the user already exists
       user.fitDataToken = tokens.access_token;
+      user.profilePicture = picture;
       await user.save();
     }
 
@@ -175,7 +177,7 @@ app.get('/get-user-data', async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     console.log('User data:', user); 
-    res.json({ email: user.email,  fullName: user.fullName, fitDataToken: user.fitDataToken });
+    res.json({ email: user.email,  fullName: user.fullName, fitDataToken: user.fitDataToken, profilePicture: user.profilePicture });
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
