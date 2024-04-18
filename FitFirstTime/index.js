@@ -164,6 +164,7 @@ app.get('/fit-data/heart-points', async (req, res) => {
 
 app.get('/get-user-data', async (req, res) => {
   const { email } = req.query;
+  console.log('Requested email:', email); 
 
   try {
     // Fetch user data including fitness token from the database
@@ -172,7 +173,7 @@ app.get('/get-user-data', async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-    console.log('User data:', user);
+    console.log('User data:', user); 
     res.json({ email: user.email,  fullName: user.fullName, fitDataToken: user.fitDataToken });
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -190,6 +191,45 @@ app.get('/searchUsers', async (req, res) => {
   } catch (error) {
     console.error('Error searching users:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/users/workouts', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ workouts: user.workouts });
+  } catch (error) {
+    console.error('Error fetching workouts:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Add route for adding workouts
+app.post('/users/workouts', async (req, res) => {
+  const { email, newWorkout } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.workouts.push(newWorkout);
+    await user.save();
+
+    res.json({ workout: newWorkout });
+  } catch (error) {
+    console.error('Error adding workout:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

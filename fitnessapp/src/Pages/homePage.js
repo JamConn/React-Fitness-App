@@ -4,29 +4,30 @@ import { Bar } from 'react-chartjs-2';
 import Grid from '@mui/material/Grid';
 import WorkoutCard from '../Components/WorkoutCard';
 import { UserContext } from '../Context/AuthContext';
+import { WorkoutsContext } from '../Context/WorkoutContext';
 import Chart from 'chart.js/auto';
 import Navbar from '../Components/Navigation'; 
 import {CategoryScale} from 'chart.js'; 
 Chart.register(CategoryScale);
 
 const Home = () => {
-  const { userData } = useContext(UserContext); // Access userData from UserContext
+  const { userData } = useContext(UserContext);
 
   const [fitData, setFitData] = useState({});
+  const [workouts, setWorkouts] = useState([]);
   const [chart, setChart] = useState(null);
 
   useEffect(() => {
-    console.log('Fetching chart data...');
     const fetchData = async () => {
       try {
-        if (!userData) return; // Ensures userData exists before making the request
+        if (!userData) return;
+
         // Fetch Google Fit data using user's token
         const response = await axios.get(`http://localhost:5000/fit-data/steps?email=${userData.email}`, {
           headers: {
             Authorization: `Bearer ${userData.fitDataToken}`,
           },
         });
-
         setFitData(response.data);
       } catch (error) {
         console.error('Error fetching Fit data:', error);
@@ -35,14 +36,31 @@ const Home = () => {
 
     fetchData();
 
-    // Unmount chart if needed
     return () => {
       if (chart) {
         chart.destroy();
       }
     };
+  }, [userData, chart]);
+
+  useEffect(() => {
+    const fetchUserWorkouts = async () => {
+      try {
+        if (!userData) return;
+
+        // Fetch workouts for the current user
+        const response = await axios.get(`/users/${userData.email}/workouts`);
+        setWorkouts(response.data.workouts);
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    };
+
+    fetchUserWorkouts();
   }, [userData]);
 
+
+  
   // Example chart data
   const chartData = {
     labels: fitData.dates || [],
@@ -110,13 +128,19 @@ const Home = () => {
       <h1>Welcome</h1>
       <Bar data={chartData} options={chartOptions} />
       <Grid container spacing={3}>
-        {workoutData.map((workout, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <WorkoutCard {...workout} />
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+          {workouts.length > 0 ? (
+            workouts.map((workout, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <WorkoutCard {...workout} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <p>No Current Workouts</p>
+            </Grid>
+          )}
+        </Grid>
+      </div>
     </>
   );
 };

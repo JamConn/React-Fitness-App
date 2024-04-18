@@ -6,6 +6,7 @@ import { UserProvider } from './Context/AuthContext';
 import Navbar from './Components/Navigation';
 import WorkoutPage from './Pages/workoutPage';
 import ListUsers from './Pages/listUsers';
+import { WorkoutsProvider } from './Context/WorkoutContext'; 
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,7 @@ function App() {
   return (
     <Router>
       <UserProvider>
+      <WorkoutsProvider>
         {isLoggedIn && <Navbar />}
         <Routes>
           <Route path="/home" element={<Home />} />
@@ -25,6 +27,7 @@ function App() {
           <Route path="/listUsers" element={<ListUsers />} />
           <Route path="/" element={<Login />} />
         </Routes>
+        </WorkoutsProvider>
       </UserProvider>
     </Router>
   );

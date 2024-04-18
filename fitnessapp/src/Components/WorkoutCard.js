@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import AddWorkoutButton from './AddWorkoutButton';
 
 const WorkoutCard = ({ name, description, videoUrl, bodyPart }) => {
   return (
@@ -20,6 +21,7 @@ const WorkoutCard = ({ name, description, videoUrl, bodyPart }) => {
           Body Part: {bodyPart}
         </Typography>
       </CardContent>
+      <AddWorkoutButton workout={{ name, description, videoUrl, bodyPart }} />
     </Card>
   );
 };
