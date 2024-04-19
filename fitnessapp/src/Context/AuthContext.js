@@ -16,9 +16,8 @@ export const UserProvider = ({ children }) => {
 
   const fetchUserData = async (email) => {
     try {
-      console.log("Test");
+
       const response = await axios.get(`http://localhost:5000/get-user-data?email=${email}`);
-      console.log('User data:', response.data);
       setUserData(response.data);
 
 

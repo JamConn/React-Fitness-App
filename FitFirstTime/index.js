@@ -82,8 +82,7 @@ app.get('/auth/google/callback', async (req, res) => {
         const email = payload.email;
         const name = payload.name;
         const picture = payload.picture;
-        console.log('email:', email);
-        console.log('name:', name); 
+
 
     // Validate the token with Google
     const response = await axios.get('https://www.googleapis.com/oauth2/v3/tokeninfo', {
@@ -119,55 +118,44 @@ app.get('/fit-data/steps', async (req, res) => {
   const { email } = req.query;
 
   try {
-    // Fetch steps data from Google Fit API using the stored token
+
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log('User not found');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const fitDataResponse = await axios.get('https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate', {
-      headers: {
-        Authorization: `Bearer ${user.fitDataToken}`,
-      },
-      params: {
-        aggregateBy: [
-          {
-            dataTypeName: 'com.google.step_count.delta',
-          },
-        ],
-        bucketByTime: { durationMillis: 86400000 }, // 1 day
-        startTimeMillis: Date.now() - 7 * 86400000, // 7 days ago
-        endTimeMillis: Date.now(),
-      },
+    const { fitDataToken } = user;
+    oauth2Client.setCredentials({ access_token: fitDataToken });
+    const fitnessStore = google.fitness({ version: 'v1', auth: oauth2Client });
+    const dataTypeName = 'com.google.step_count.delta';
+    const dataSourceId = 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps';
+
+    const data = {
+      aggregateBy: [{ dataTypeName, dataSourceId }],
+      bucketByTime: { durationMillis: 24 * 60 * 60 * 1000 },
+      startTimeMillis: Date.now() - (20 * 24 * 60 * 60 * 1000),
+      endTimeMillis: Date.now()
+    };
+
+    const result = await fitnessStore.users.dataset.aggregate({
+      userId: 'me',
+      requestBody: data
     });
 
-    console.log('Steps data response:', fitDataResponse.data); 
-
-
-    // Process steps data and send it to the client
-    const stepsData = parseFitData(fitDataResponse.data);
-    res.json(stepsData);
+    res.json(result.data); // Return the fitness data directly
   } catch (error) {
     console.error('Error fetching steps data:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
 
+
+
 // Google Fit API route for calories
 app.get('/fit-data/calories', async (req, res) => {
-  // Similar implementation as steps route
-});
-
-// Google Fit API route for heart points
-app.get('/fit-data/heart-points', async (req, res) => {
-  // Similar implementation as steps route
-});
-
-//User Data retrieved fixed
-app.get('/get-user-data', async (req, res) => {
   const { email } = req.query;
-  console.log('Requested email:', email); 
 
   try {
     const user = await User.findOne({ email });
@@ -176,7 +164,82 @@ app.get('/get-user-data', async (req, res) => {
       console.log('User not found');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-    console.log('User data:', user); 
+
+    oauth2Client.setCredentials({ access_token: user.fitDataToken });
+
+    const fitnessStore = google.fitness({ version: 'v1', auth: oauth2Client });
+
+    const dataTypeName = 'com.google.calories.expended';
+
+    const data = {
+      aggregateBy: [{ dataTypeName }],
+      bucketByTime: { durationMillis: 24 * 60 * 60 * 1000 },
+      startTimeMillis: Date.now() - (20 * 24 * 60 * 60 * 1000),
+      endTimeMillis: Date.now()
+    };
+
+    const result = await fitnessStore.users.dataset.aggregate({
+      userId: 'me',
+      requestBody: data
+    });
+
+    res.json(result.data);
+  } catch (error) {
+    console.error('Error fetching calories data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
+// Google Fit API route for heart points
+app.get('/fit-data/heart-points', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    oauth2Client.setCredentials({ access_token: user.fitDataToken });
+
+    const fitnessStore = google.fitness({ version: 'v1', auth: oauth2Client });
+
+    const dataTypeName = 'com.google.heart_minutes';
+
+    const data = {
+      aggregateBy: [{ dataTypeName }],
+      bucketByTime: { durationMillis: 24 * 60 * 60 * 1000 },
+      startTimeMillis: Date.now() - (20 * 24 * 60 * 60 * 1000),
+      endTimeMillis: Date.now()
+    };
+
+    const result = await fitnessStore.users.dataset.aggregate({
+      userId: 'me',
+      requestBody: data
+    });
+
+    res.json(result.data);
+  } catch (error) {
+    console.error('Error fetching heart points data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+//User Data retrieved fixed
+app.get('/get-user-data', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
     res.json({ email: user.email,  fullName: user.fullName, fitDataToken: user.fitDataToken, profilePicture: user.profilePicture });
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -184,8 +247,9 @@ app.get('/get-user-data', async (req, res) => {
   }
 });
 
-//Search Route filtering through Online User database
 
+
+//Search Route filtering through Online User database
 app.get('/searchUsers', async (req, res) => {
   const { name } = req.query;
   try {
@@ -198,6 +262,7 @@ app.get('/searchUsers', async (req, res) => {
 });
 
 
+//Get workouts
 app.get('/users/workouts', async (req, res) => {
   const { email } = req.query;
 
@@ -261,19 +326,6 @@ app.delete('/users/workouts/:workoutName', async (req, res) => {
   }
 });
 
-// Helper function to parse Google Fit data
-const parseFitData = (fitData) => {
-  const parsedData = {
-    dates: fitData.bucket.map((bucket) => new Date(bucket.startTimeMillis).toLocaleDateString()),
-    steps: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].intVal),
-    calories: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].fpVal),
-    heartPoints: fitData.bucket.map((bucket) => bucket.dataset[0].point[0].value[0].intVal),
-  };
-
-  console.log('Parsed Fit data:', parsedData); 
-
-  return parsedData;
-};
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
