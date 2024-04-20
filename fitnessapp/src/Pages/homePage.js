@@ -9,6 +9,7 @@ import { WorkoutsContext } from '../Context/WorkoutContext';
 import Chart from 'chart.js/auto';
 import Navbar from '../Components/Navigation';
 import { CategoryScale } from 'chart.js';
+import LinearProgress from '@mui/material/LinearProgress';
 Chart.register(CategoryScale);
 
 const Home = () => {
@@ -20,6 +21,10 @@ const Home = () => {
   const [caloriesData, setCaloriesData] = useState([]);
   const [heartPointsData, setHeartPointsData] = useState([]);
   const [dateLabels, setDateLabels] = useState([]);
+  const [userLevel, setUserLevel] = useState(0);
+  const [userPoints, setUserPoints] = useState(0);
+  const [levelFetched, setLevelFetched] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +34,7 @@ const Home = () => {
 
         let stepsResponse, caloriesResponse, heartPointsResponse;
 
+        // Fetch steps data
         if (stepsData.length === 0) {
           console.log('Fetching Steps data...');
           stepsResponse = await axios.get(`http://localhost:5000/fit-data/steps?email=${userData.email}`, {
@@ -40,6 +46,7 @@ const Home = () => {
           setStepsData(parseStepsData(stepsResponse.data));
         }
 
+        // Fetch calories data
         if (caloriesData.length === 0) {
           console.log('Fetching Calories data...');
           caloriesResponse = await axios.get(`http://localhost:5000/fit-data/calories?email=${userData.email}`, {
@@ -51,6 +58,7 @@ const Home = () => {
           setCaloriesData(parseCaloriesData(caloriesResponse.data));
         }
 
+        // Fetch heart points data
         if (heartPointsData.length === 0) {
           console.log('Fetching Heart Points data...');
           heartPointsResponse = await axios.get(`http://localhost:5000/fit-data/heart-points?email=${userData.email}`, {
@@ -62,6 +70,14 @@ const Home = () => {
           setHeartPointsData(parseHeartPointsData(heartPointsResponse.data));
         }
 
+        if (!levelFetched) {
+          const levelResponse = await axios.get(`http://localhost:5000/get-level?email=${userData.email}`);
+          setUserPoints(levelResponse.data.user.points); 
+          setUserLevel(levelResponse.data.user.level);
+          setLevelFetched(true);
+          console.log('Level data:', levelResponse.data);
+        }
+
         if (dateLabels.length === 0) {
           const labels = stepsResponse.data.bucket.map(bucket => {
             const date = new Date(parseInt(bucket.startTimeMillis));
@@ -69,17 +85,24 @@ const Home = () => {
           });
           setDateLabels(labels);
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
+
+
+       if (userPoints > 0) {
+        const progress = (userPoints % 100) / 100; 
+        setProgressPercentage(progress * 100);
+        console.log('Progress percentage:', progress * 100);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
     if (userData && !loading) {
       fetchData();
     }
-  }, [userData, loading]);
+  }, [userData, loading, levelFetched, stepsData, caloriesData, heartPointsData, dateLabels, userPoints]);
 
   const parseStepsData = (fitData) => {
     return fitData.bucket.map(bucket => {
@@ -90,36 +113,36 @@ const Home = () => {
 
   const parseCaloriesData = (fitData) => {
     if (!fitData || !fitData.bucket) return [];
-  
+
     return fitData.bucket.map(bucket => {
       if (!bucket.dataset || !bucket.dataset[0] || !bucket.dataset[0].point || !bucket.dataset[0].point[0]) return 0;
-  
+
       const point = bucket.dataset[0].point[0];
-      return point.value[0].fpVal || 0; 
+      return point.value[0].fpVal || 0;
     });
   };
 
   const parseHeartPointsData = (fitData) => {
     if (!fitData || !fitData.bucket) return [];
-  
+
     return fitData.bucket.map(bucket => {
       if (!bucket.dataset || !bucket.dataset[0] || !bucket.dataset[0].point || !bucket.dataset[0].point[0]) return 0;
-  
+
       const point = bucket.dataset[0].point[0];
       if (point.value && point.value.length > 0) {
         // Check for fpVal
         const fpVal = point.value.find(val => val.fpVal !== undefined)?.fpVal;
         if (fpVal !== undefined) return fpVal;
-  
+
         // If not we use intVal
         const intVal = point.value.find(val => val.intVal !== undefined)?.intVal;
         if (intVal !== undefined) return intVal;
       }
-      
+
       return 0; // Default value if neither fpVal nor intVal is found
     });
   };
-  
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const userEmail = urlParams.get('email');
@@ -167,7 +190,15 @@ const Home = () => {
             {loading ? (
               <p>Loading...</p>
             ) : (
-              <Bar data={{ labels: dateLabels, datasets: [{ label: 'Heart Points', data: heartPointsData, backgroundColor: 'rgba(255, 159, 64, 0.5)', borderWidth: 1 }] }} options={{}} />
+              <Bar data={{ labels: dateLabels, datasets: [{ label: 'Heart Points', data: heartPointsData, backgroundColor: 'rgba(54, 162, 235, 0.5)', borderWidth: 1 }] }} options={{}} />
+            )}
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            {loading ? null : (
+              <div style={{ marginTop: '20px' }}>
+                <p>Level: {userLevel}</p>
+                <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%' }} />
+              </div>
             )}
           </Grid>
         </Grid>

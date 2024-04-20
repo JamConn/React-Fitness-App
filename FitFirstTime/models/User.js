@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   fitDataToken: String,
   profilePicture: { type: String },
+  level: { type: Number, default: 0 }, 
+  points: { type: Number, default: 0 },
   workouts: [
     {
       name: String,

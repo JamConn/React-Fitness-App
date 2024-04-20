@@ -327,6 +327,83 @@ app.delete('/users/workouts/:workoutName', async (req, res) => {
 });
 
 
+//Levels
+app.get('/get-level', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const fitDataToken = user.fitDataToken;
+
+    try {
+      oauth2Client.setCredentials({ access_token: fitDataToken });
+
+      const fitnessStore = google.fitness({ version: 'v1', auth: oauth2Client });
+
+      const dataTypeName = 'com.google.heart_minutes';
+
+      const data = {
+        aggregateBy: [{ dataTypeName }],
+        bucketByTime: { durationMillis: 24 * 60 * 60 * 1000 },
+        startTimeMillis: Date.now() - (24 * 60 * 60 * 1000),
+        endTimeMillis: Date.now()
+      };
+
+      const result = await fitnessStore.users.dataset.aggregate({
+        userId: 'me',
+        requestBody: data
+      });
+
+      const pointsToAdd = parseHeartPointsData(result.data);
+
+      user.points += pointsToAdd;
+
+      user.level = Math.floor(user.points / 100);
+
+      await user.save();
+
+      res.json({ success: true, user });
+    } catch (error) {
+      console.error('Error fetching heart points data:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+// Function to parse heart points data
+function parseHeartPointsData(fitData) {
+  if (!fitData || !fitData.bucket) return 0;
+
+  const points = fitData.bucket.reduce((totalPoints, bucket) => {
+    if (!bucket.dataset || !bucket.dataset[0] || !bucket.dataset[0].point || !bucket.dataset[0].point[0]) return totalPoints;
+
+    const point = bucket.dataset[0].point[0];
+
+    if (point.value && point.value.length > 0) {
+      const fpVal = point.value.find(val => val.fpVal !== undefined)?.fpVal;
+      if (fpVal !== undefined) return totalPoints + fpVal;
+      const intVal = point.value.find(val => val.intVal !== undefined)?.intVal;
+      if (intVal !== undefined) return totalPoints + intVal;
+    }
+
+    return totalPoints;
+  }, 0);
+
+  return points;
+}
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
