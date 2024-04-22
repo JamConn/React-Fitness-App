@@ -1,28 +1,24 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import axios from 'axios';
-import { google } from 'googleapis';
-import User from './models/User';
-import initializeDatabase from './initialise-dev/initDevDB';
-import dotenv from 'dotenv';
-import { OAuth2Client } from 'google-auth-library'; 
-
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const axios = require('axios');
+const { google } = require('googleapis');
+const User = require('./models/User');
+const path = require('path');
+const initializeDatabase = require('./initialise-dev/initDevDB');
+const dotenv = require('dotenv');
+const { OAuth2Client } = require('google-auth-library'); 
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 app.use(cors());
 app.use(express.json());
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../fitnessapp/build')));
-
-
-
 
 mongoose.connect(process.env.MONGO_DB, {
   useNewUrlParser: true,
@@ -49,8 +45,10 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'http://localhost:5000/auth/google/callback'
+  'https://still-refuge-99244.herokuapp.com/auth/google/callback'
 );
+
+
 
 // Generate the consent URL
 const SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read',   'https://www.googleapis.com/auth/userinfo.profile',  'https://www.googleapis.com/auth/userinfo.email'];
@@ -431,7 +429,7 @@ app.get('/latest-profile-pic', async (req, res) => {
 
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Fitnessapp/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../fitnessapp/build', 'index.html'));
 });
 
 
