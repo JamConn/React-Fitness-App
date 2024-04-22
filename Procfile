@@ -1,1 +1,1 @@
-web: node FitFirstTime/index.js
+web: cd FitFirstTime && npm install && npm start
