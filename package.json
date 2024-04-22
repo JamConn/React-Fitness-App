@@ -1,0 +1,12 @@
+{
+    "name": "fitfirsttime",
+    "version": "1.0.0",
+    "description": "FitFirstTime application",
+    "scripts": {
+      "start": "node fitfirsttime/index.js", 
+      "build": "cd fitnessapp && npm install && npm run build" 
+    },
+    "engines": {
+      "node": "14.x" 
+    }
+  }
