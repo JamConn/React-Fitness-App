@@ -10,7 +10,7 @@ import Chart from 'chart.js/auto';
 import Navbar from '../Components/Navigation';
 import { CategoryScale } from 'chart.js';
 import LinearProgress from '@mui/material/LinearProgress';
-import { googleFont } from 'google-fonts';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 Chart.register(CategoryScale);
 
@@ -27,6 +27,9 @@ const Home = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [levelFetched, setLevelFetched] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const [error, setError] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
+  const [fetchedProfilePic, setFetchedProfilePic] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,23 +91,30 @@ const Home = () => {
           setDateLabels(labels);
         }
 
-
-       if (userPoints > 0) {
-        const progress = (userPoints % 100) / 100; 
-        setProgressPercentage(progress * 100);
-        console.log('Progress percentage:', progress * 100);
+        if (userPoints > 0) {
+          const progress = (userPoints % 100) / 100; 
+          setProgressPercentage(progress * 100);
+          console.log('Progress percentage:', progress * 100);
+        }
+        //fetch the profile pic
+        if (!fetchedProfilePic) {
+          const profilePicResponse = await axios.get(`http://localhost:5000/latest-profile-pic?email=${userData.email}`);
+          console.log('Profile picture data:', profilePicResponse.data);
+          setProfilePic(profilePicResponse.data.profilePic);
+          setFetchedProfilePic(true); 
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error); 
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
     if (userData && !loading) {
       fetchData();
     }
-  }, [userData, loading, levelFetched, stepsData, caloriesData, heartPointsData, dateLabels, userPoints]);
+  }, [userData, loading, levelFetched, stepsData, caloriesData, heartPointsData, dateLabels, userPoints, fetchedProfilePic]);
 
   const parseStepsData = (fitData) => {
     return fitData.bucket.map(bucket => {
@@ -160,19 +170,17 @@ const Home = () => {
     }
   }, [userData, fetchWorkouts]);
 
-  useEffect(() => {
-    if (userData && userData.profilePicture) {
-      // Append a timestamp to the profile picture URL
-      const profilePictureUrl = `${userData.profilePicture}?t=${Date.now()}`;
-
-      const img = new Image();
-      img.src = profilePictureUrl;
-      img.onload = () => {
-        userData.profilePicture = img.src;
-        fetchUserData(userData);
-      };
-    }
-  }, [userData, fetchUserData]);
+  if (error) {
+    // Render error message if an error occurred while fetching data
+    return (
+      <>
+        <Navbar />
+        <div style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#FAF3DD', padding: '50px', width: '100%' }}>
+          <p>An error occurred while fetching data. Please try again later.</p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -182,17 +190,22 @@ const Home = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={3}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <img src={userData.profilePicture} alt="Profile" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
+                {profilePic ? (
+                  <img src={profilePic} alt="User Profile Picture" style={{ width: '50%', height: 'auto', borderRadius: '50%' }} />
+                ) : (
+                  <AccountCircleIcon style={{ fontSize: 100 }} />
+                )}
               </div>
               <div style={{ textAlign: 'center' }}>
                 <h1>{userData.fullName}</h1>
                 <h2>{userData.email}</h2>
               </div>
-              <br></br>
-              <div style={{ padding: '100px', textAlign: 'center' }}>
+              <div style={{ paddingLeft: '70px', paddingTop: '180px' }}>
+              <div style={{justifyContent: 'center', textAlign: 'center',border: '6px solid black', borderRadius: '50%', width: '200px', height: '200px', padding: '50px'   }}>
                 <h1>Level</h1>
                 <h1>{userLevel}</h1>
                 <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%', margin: 'auto' }} />
+              </div>
               </div>
             </Grid>
             <Grid item xs={12} sm={9}>
@@ -233,14 +246,12 @@ const Home = () => {
         )}
         <hr style={{ margin: '50px 0', border: 'none', borderBottom: '2px solid #d4c69d', width: '90%', position: 'center' }} />
         <Grid container spacing={2}>
-        <h1>Your Workouts!</h1>
+          <h1>Your Workouts!</h1>
           <Grid item xs={12} sm={12}>
-            <div style={{ padding: '20px', display: 'flex', flexWrap: 'wrap'}}>
-
+            <div style={{ padding: '20px', display: 'flex', flexWrap: 'wrap' }}>
               {workouts && workouts.length > 0 ? (
                 workouts.map((workout, index) => (
                   <div key={index} style={{ width: '30%', margin: '10px', minWidth: '150px' }}>
-
                     <WorkoutCard {...workout} />
                     <DeleteWorkoutButton workoutName={workout.name} />
                   </div>

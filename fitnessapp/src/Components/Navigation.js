@@ -1,13 +1,21 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Grid } from '@mui/material';
+import React, { useContext } from 'react';
+import { AppBar, Toolbar, Typography, Grid, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import logo from '../img/logo.png';
 import SearchBar from './SearchBar';
-import { Link } from 'react-router-dom'; 
-
-
+import { Link, useNavigate } from 'react-router-dom'; 
+import { UserContext } from '../Context/AuthContext';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { userData, fetchUserData } = useContext(UserContext);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userData');
+    fetchUserData(null);
+    navigate('/'); 
+  };
+
   return (
     <AppBar position="static" style={{ backgroundColor: '#095256' }}>
       <Toolbar>
@@ -31,11 +39,17 @@ const Navbar = () => {
           <Grid item>
             <SearchBar />
           </Grid>
+          <Grid item>
+            {userData && (
+              <Button variant="outlined" style={{ color: 'white', borderColor: 'white' }} onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
+          </Grid>
         </Grid>
       </Toolbar>
     </AppBar>
   );
 };
-  
 
-  export default Navbar;
+export default Navbar;

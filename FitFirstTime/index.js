@@ -403,6 +403,29 @@ function parseHeartPointsData(fitData) {
 
 
 
+app.get('/latest-profile-pic', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    const profilePic = user.profilePicture;
+
+    if (!profilePic) {
+      return res.status(404).json({ success: false, message: 'Profile picture not found for the user' });
+    }
+    res.json({ success: true, profilePic });
+  } catch (error) {
+    console.error('Error fetching profile picture:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
