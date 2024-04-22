@@ -4,7 +4,7 @@
     "description": "FitFirstTime application",
     "scripts": {
       "start": "node FitFirstTime/index.js",
-      "build": "cd fitnessapp && npm install && npm run build"
+      "build": "cd fitnessapp && npm install && npm run start"
     },
     "engines": {
       "node": "14.x"
