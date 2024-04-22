@@ -3,61 +3,39 @@ import { AppBar, Toolbar, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import logo from '../img/logo.png';
 import SearchBar from './SearchBar';
+import { Link } from 'react-router-dom'; 
 
 
 
 const Navbar = () => {
-    return (
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container alignItems="center" spacing={2}>
-            <Grid item>
+  return (
+    <AppBar position="static" style={{ backgroundColor: '#095256' }}>
+      <Toolbar>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item>
+            <Link to="/home" style={{ textDecoration: 'none', color: 'white' }}>
               <img src={logo} alt="Logo" style={{ width: 'auto', height: '50px' }} />
-            </Grid>
-            <Grid item>
-              <Typography variant="h6" component="div">
-                <a href="/home" style={{ textDecoration: 'none', color: 'inherit' }}>Home</a>
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h6" component="div">
-                <a href="/workouts" style={{ textDecoration: 'none', color: 'inherit' }}>Workouts</a>
-              </Typography>
-            </Grid>
-            <Grid item xs />
-            <Grid item>
-            <SearchBar />
-            </Grid>
+            </Link>
           </Grid>
-        </Toolbar>
-      </AppBar>
-    );
-  };
+          <Grid item>
+            <Typography variant="h6" component="div">
+              <a href="/home" style={{ textDecoration: 'none', color: 'white' }}>Home</a>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="h6" component="div">
+              <a href="/workouts" style={{ textDecoration: 'none', color: 'white' }}>Workouts</a>
+            </Typography>
+          </Grid>
+          <Grid item xs />
+          <Grid item>
+            <SearchBar />
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </AppBar>
+  );
+};
   
-  const SearchContainer = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
+
   export default Navbar;

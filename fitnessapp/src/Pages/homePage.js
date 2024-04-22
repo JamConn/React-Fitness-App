@@ -10,6 +10,8 @@ import Chart from 'chart.js/auto';
 import Navbar from '../Components/Navigation';
 import { CategoryScale } from 'chart.js';
 import LinearProgress from '@mui/material/LinearProgress';
+import { googleFont } from 'google-fonts';
+
 Chart.register(CategoryScale);
 
 const Home = () => {
@@ -161,60 +163,79 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div>
+      <div style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#FAF3DD', padding: '50px', width: '100%' }}>
         {userData && (
-          <div>
-            <h1>Welcome, {userData.fullName}</h1>
-            <img src={userData.profilePicture} alt="Profile" />
-          </div>
-        )}
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <h2>Steps</h2>
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <Bar data={{ labels: dateLabels, datasets: [{ label: 'Steps', data: stepsData, backgroundColor: 'rgba(75, 192, 192, 0.5)', borderWidth: 1 }] }} options={{}} />
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <h2>Calories</h2>
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <Bar data={{ labels: dateLabels, datasets: [{ label: 'Calories', data: caloriesData, backgroundColor: 'rgba(255, 99, 132, 0.5)', borderWidth: 1 }] }} options={{}} />
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <h2>Heart Points</h2>
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <Bar data={{ labels: dateLabels, datasets: [{ label: 'Heart Points', data: heartPointsData, backgroundColor: 'rgba(54, 162, 235, 0.5)', borderWidth: 1 }] }} options={{}} />
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            {loading ? null : (
-              <div style={{ marginTop: '20px' }}>
-                <p>Level: {userLevel}</p>
-                <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%' }} />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={3}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <img src={userData.profilePicture} alt="Profile" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
               </div>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          {workouts && workouts.length > 0 ? (
-            workouts.map((workout, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <WorkoutCard {...workout} />
-                <DeleteWorkoutButton workoutName={workout.name} />
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <p>No Current Workouts</p>
+              <div style={{ textAlign: 'center' }}>
+                <h1>{userData.fullName}</h1>
+                <h2>{userData.email}</h2>
+              </div>
+              <br></br>
+              <div style={{ padding: '100px', textAlign: 'center' }}>
+                <h1>Level</h1>
+                <h1>{userLevel}</h1>
+                <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%', margin: 'auto' }} />
+              </div>
             </Grid>
-          )}
+            <Grid item xs={12} sm={9}>
+              <Grid container spacing={5}>
+                <Grid item xs={12} sm={5}>
+                  <div style={{ padding: '0px' }}>
+                    <h2>Steps</h2>
+                    {loading ? (
+                      <p>Loading...</p>
+                    ) : (
+                      <Bar data={{ labels: dateLabels, datasets: [{ label: 'Steps', data: stepsData, backgroundColor: 'rgba(6, 187, 193, 0.5)', borderWidth: 1 }] }} options={{}} />
+                    )}
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={5}>
+                  <div style={{ padding: '0px' }}>
+                    <h2>Calories</h2>
+                    {loading ? (
+                      <p>Loading...</p>
+                    ) : (
+                      <Bar data={{ labels: dateLabels, datasets: [{ label: 'Calories', data: caloriesData, backgroundColor: 'rgba(190, 184, 235, 0.5)', borderWidth: 1 }] }} options={{}} />
+                    )}
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={9}>
+                  <div style={{ padding: '0px' }}>
+                    <h2>Heart Points</h2>
+                    {loading ? (
+                      <p>Loading...</p>
+                    ) : (
+                      <Bar data={{ labels: dateLabels, datasets: [{ label: 'Heart Points', data: heartPointsData, backgroundColor: 'rgba(219, 79, 74, 0.5)', borderWidth: 1 }] }} options={{}} />
+                    )}
+                  </div>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
+        <hr style={{ margin: '50px 0', border: 'none', borderBottom: '2px solid #d4c69d', width: '90%', position: 'center' }} />
+        <Grid container spacing={2}>
+        <h1>Your Workouts!</h1>
+          <Grid item xs={12} sm={12}>
+            <div style={{ padding: '20px', display: 'flex', flexWrap: 'wrap'}}>
+
+              {workouts && workouts.length > 0 ? (
+                workouts.map((workout, index) => (
+                  <div key={index} style={{ width: '30%', margin: '10px', minWidth: '150px' }}>
+
+                    <WorkoutCard {...workout} />
+                    <DeleteWorkoutButton workoutName={workout.name} />
+                  </div>
+                ))
+              ) : (
+                <h1>No Current Workouts</h1>
+              )}
+            </div>
+          </Grid>
         </Grid>
       </div>
     </>

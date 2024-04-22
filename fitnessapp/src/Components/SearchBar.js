@@ -27,6 +27,7 @@ const SearchBar = () => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyPress={handleKeyPress}
+        style={{ backgroundColor: '#119299', borderRadius: '5px', padding: '5px 10px' }}
       />
       <IconButton onClick={handleSearch}>
         <SearchIcon />
