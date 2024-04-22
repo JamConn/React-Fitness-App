@@ -160,6 +160,20 @@ const Home = () => {
     }
   }, [userData, fetchWorkouts]);
 
+  useEffect(() => {
+    if (userData && userData.profilePicture) {
+      // Append a timestamp to the profile picture URL
+      const profilePictureUrl = `${userData.profilePicture}?t=${Date.now()}`;
+
+      const img = new Image();
+      img.src = profilePictureUrl;
+      img.onload = () => {
+        userData.profilePicture = img.src;
+        fetchUserData(userData);
+      };
+    }
+  }, [userData, fetchUserData]);
+
   return (
     <>
       <Navbar />

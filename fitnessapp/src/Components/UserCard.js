@@ -1,16 +1,22 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, Avatar } from '@mui/material';
 
 const UserCard = ({ user }) => {
   return (
     <Card variant="outlined" style={{ width: '100%', marginBottom: '10px' }}>
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          {user.fullName}
-        </Typography>
-        <Typography color="textSecondary">
-          Email: {user.email}
-        </Typography>
+      <CardContent style={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar src={user.profilePicture} alt={user.fullName} style={{ marginRight: '10px', width: '80px', height: '80px' }} />
+        <div>
+          <Typography variant="h5" component="h2">
+            {user.fullName}
+          </Typography>
+          <Typography color="textSecondary">
+            Email: {user.email}
+          </Typography>
+          <Typography color="textSecondary">
+            Level: {user.level}
+          </Typography>
+        </div>
       </CardContent>
     </Card>
   );

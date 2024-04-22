@@ -38,7 +38,7 @@ const ListUsers = () => {
   }, [window.location.search]);
 
   return (
-    <div>
+    <div style={{ backgroundColor: '#FAF3DD', height: '100vh' }}>
       <Navbar />
       {loading && <Typography variant="h6">Loading...</Typography>}
       {error && <Typography variant="h6">{error}</Typography>}
