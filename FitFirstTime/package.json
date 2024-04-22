@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node index.js",
-    "dev": "babel-node ./initialise-dev/initDevDB.js && nodemon --exec npm start"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
