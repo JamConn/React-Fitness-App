@@ -108,7 +108,7 @@ app.get('/auth/google/callback', async (req, res) => {
       await user.save();
     }
 
-    res.redirect(`http://localhost:3000/home?email=${user.email}`);
+    res.redirect(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/home?email=${user.email}`);
   } catch (error) {
     console.error('Error handling OAuth callback:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
