@@ -1,8 +1,15 @@
-import dotenv from 'dotenv';
+// Replace import with require for dotenv
+const dotenv = require('dotenv');
 dotenv.config();
-import mongoose from 'mongoose';
-import users from '../models/Users';
-import User from '../models/User';
+
+// Replace import with require for mongoose
+const mongoose = require('mongoose');
+
+// Replace import with require for models/Users
+const users = require('../models/Users');
+
+// Replace import with require for models/User
+const User = require('../models/User');
 
 async function initializeDatabase() {
   if (process.env.NODE_ENV !== 'development') {
@@ -33,7 +40,7 @@ async function initializeDatabase() {
   }
 }
 
-export default initializeDatabase;
+module.exports = initializeDatabase;
 
 // Call this function when you want to initialize the database
 initializeDatabase();
