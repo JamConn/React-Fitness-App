@@ -6,7 +6,7 @@ import './loginPage.css';
 const LoginPage = ({ onLogin }) => {
   const handleLogin = async () => {
     try {
-      window.location.href = 'http://localhost:5000/auth/google';
+      window.location.href = 'https://still-refuge-99244-ad555b13e2bb.herokuapp.com/auth/google';
     } catch (error) {
       console.error('Error:', error);
     }

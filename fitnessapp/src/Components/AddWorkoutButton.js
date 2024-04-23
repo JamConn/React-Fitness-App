@@ -19,7 +19,7 @@ const AddWorkoutButton = ({ workout }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:5000/users/workouts', { email: userData.email, newWorkout: workout });
+      const response = await axios.post('https://still-refuge-99244-ad555b13e2bb.herokuapp.com/users/workouts', { email: userData.email, newWorkout: workout });
       console.log('Response:', response);
       if (response.status === 200) {
         setAdded(true);

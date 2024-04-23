@@ -8,7 +8,7 @@ export const WorkoutsProvider = ({ children }) => {
 
   const fetchWorkouts = async (email) => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/workouts?email=${email}`);
+      const response = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/users/workouts?email=${email}`);
       setWorkouts(response.data.workouts);
       localStorage.setItem('workouts', JSON.stringify(response.data.workouts)); 
     } catch (error) {
@@ -29,7 +29,7 @@ export const WorkoutsProvider = ({ children }) => {
 
   const addWorkout = async (email, newWorkout) => {
     try {
-      const response = await axios.post('http://localhost:5000/users/workouts', { email, newWorkout });
+      const response = await axios.post('https://still-refuge-99244-ad555b13e2bb.herokuapp.com/users/workouts', { email, newWorkout });
       setWorkouts([...workouts, response.data.workout]);
       localStorage.setItem('workouts', JSON.stringify([...workouts, response.data.workout])); 
     } catch (error) {

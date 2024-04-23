@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
   const fetchUserData = async (email) => {
     try {
 
-      const response = await axios.get(`http://localhost:5000/get-user-data?email=${email}`);
+      const response = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/get-user-data?email=${email}`);
       setUserData(response.data);
 
 

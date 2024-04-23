@@ -42,7 +42,7 @@ const Home = () => {
         // Fetch steps data
         if (stepsData.length === 0) {
           console.log('Fetching Steps data...');
-          stepsResponse = await axios.get(`http://localhost:5000/fit-data/steps?email=${userData.email}`, {
+          stepsResponse = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/fit-data/steps?email=${userData.email}`, {
             headers: {
               Authorization: `Bearer ${userData.fitDataToken}`,
             },
@@ -54,7 +54,7 @@ const Home = () => {
         // Fetch calories data
         if (caloriesData.length === 0) {
           console.log('Fetching Calories data...');
-          caloriesResponse = await axios.get(`http://localhost:5000/fit-data/calories?email=${userData.email}`, {
+          caloriesResponse = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/fit-data/calories?email=${userData.email}`, {
             headers: {
               Authorization: `Bearer ${userData.fitDataToken}`,
             },
@@ -66,7 +66,7 @@ const Home = () => {
         // Fetch heart points data
         if (heartPointsData.length === 0) {
           console.log('Fetching Heart Points data...');
-          heartPointsResponse = await axios.get(`http://localhost:5000/fit-data/heart-points?email=${userData.email}`, {
+          heartPointsResponse = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/fit-data/heart-points?email=${userData.email}`, {
             headers: {
               Authorization: `Bearer ${userData.fitDataToken}`,
             },
@@ -76,7 +76,7 @@ const Home = () => {
         }
 
         if (!levelFetched) {
-          const levelResponse = await axios.get(`http://localhost:5000/get-level?email=${userData.email}`);
+          const levelResponse = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/get-level?email=${userData.email}`);
           setUserPoints(levelResponse.data.user.points); 
           setUserLevel(levelResponse.data.user.level);
           setLevelFetched(true);
@@ -98,7 +98,7 @@ const Home = () => {
         }
         //fetch the profile pic
         if (!fetchedProfilePic) {
-          const profilePicResponse = await axios.get(`http://localhost:5000/latest-profile-pic?email=${userData.email}`);
+          const profilePicResponse = await axios.get(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/latest-profile-pic?email=${userData.email}`);
           console.log('Profile picture data:', profilePicResponse.data);
           setProfilePic(profilePicResponse.data.profilePic);
           setFetchedProfilePic(true); 

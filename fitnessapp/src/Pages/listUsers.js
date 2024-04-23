@@ -14,7 +14,7 @@ const ListUsers = () => {
 
     if (searchName) {
       console.log('Search Name:', searchName);
-      fetch(`http://localhost:5000/searchUsers?name=${encodeURIComponent(searchName)}`)
+      fetch(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/searchUsers?name=${encodeURIComponent(searchName)}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch search results');

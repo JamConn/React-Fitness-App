@@ -14,7 +14,7 @@ const DeleteWorkoutButton = ({ workoutName }) => {
         return;
       }
       const { email } = userData; 
-      await axios.delete(`http://localhost:5000/users/workouts/${workoutName}`, {
+      await axios.delete(`https://still-refuge-99244-ad555b13e2bb.herokuapp.com/users/workouts/${workoutName}`, {
         params: { email },
       });
       console.log('Workout deleted successfully');
