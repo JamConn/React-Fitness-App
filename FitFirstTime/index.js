@@ -5,7 +5,6 @@ const axios = require('axios');
 const { google } = require('googleapis');
 const User = require('./models/User');
 const path = require('path');
-const initializeDatabase = require('./initialise-dev/initDevDB');
 const dotenv = require('dotenv');
 const { OAuth2Client } = require('google-auth-library'); 
 

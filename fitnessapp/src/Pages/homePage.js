@@ -185,7 +185,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#FAF3DD', padding: '50px', width: '100%' }}>
+      <div style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#FAF3DD', padding: '50px', width: '100%', overflowX: 'hidden' }}> 
         {userData && (
           <Grid container spacing={2}>
             <Grid item xs={12} sm={3}>
@@ -200,12 +200,12 @@ const Home = () => {
                 <h1>{userData.fullName}</h1>
                 <h2>{userData.email}</h2>
               </div>
-              <div style={{ paddingLeft: '70px', paddingTop: '180px' }}>
-              <div style={{justifyContent: 'center', textAlign: 'center',border: '6px solid black', borderRadius: '50%', width: '200px', height: '200px', padding: '50px'   }}>
-                <h1>Level</h1>
-                <h1>{userLevel}</h1>
-                <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%', margin: 'auto' }} />
-              </div>
+              <div style={{ paddingLeft: '70px', paddingTop: '20px', paddingBottom: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> 
+                <div style={{ justifyContent: 'center', textAlign: 'center', border: '6px solid black', borderRadius: '50%', width: '200px', height: '200px', padding: '50px' }}>
+                  <h1>Level</h1>
+                  <h1>{userLevel}</h1>
+                  <LinearProgress variant="determinate" value={progressPercentage} style={{ width: '80%', margin: 'auto' }} />
+                </div>
               </div>
             </Grid>
             <Grid item xs={12} sm={9}>
