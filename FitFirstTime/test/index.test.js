@@ -2,26 +2,22 @@ const mongoose = require('mongoose');
 const express = require('express');
 const supertest = require('supertest');
 const User = require('../models/User');
-const app = require('../index');
-const request = supertest(app);
+const app = require('../index'); 
+const request = require('supertest')(app);
 
 describe('User Model', () => {
   beforeAll(async () => {
-    // Connect to the local test database
-    await mongoose.connect('testDB', {
+    await mongoose.connect(process.env.TEST_MONGO_DB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
     });
   });
 
   afterAll(async () => {
-    // Close the database connection after all tests are complete
     await mongoose.connection.close();
   });
 
   beforeEach(async () => {
-    // Clear the User collection in the local test database before each test
     await User.deleteMany({});
   });
 
@@ -45,21 +41,29 @@ describe('User Model', () => {
       profilePicture: 'test.jpg',
     };
 
-    await User.create(userData); // Create a user with the same email
+    await User.create(userData); // Create the first user
     let error;
     try {
-      await User.create(userData); // Attempt to create another user with the same email
+      // Attempt to create another user with the same email
+      await User.create(userData);
     } catch (err) {
+      // If an error occurs, assign it to the error variable
       error = err;
     }
+    // Expect that an error occurred
     expect(error).toBeTruthy();
-    expect(error.code).toBe(11000); // MongoDB duplicate key error code
+    // Expect that the error code is 11000 (MongoDB duplicate key error code)
+    expect(error.code).toBe(11000);
+    // Optionally, you can also check the error message
+    expect(error.message).toContain('duplicate key error');
   });
 
   // Add more user model tests as needed
 });
 
+// Server routes tests
 describe('Server Routes', () => {
+  // This assumes you have implemented these routes in your Express app
   it('should respond with status 200 for /auth/google', async () => {
     const response = await request.get('/auth/google');
     expect(response.status).toBe(200);
@@ -76,7 +80,7 @@ describe('Server Routes', () => {
   });
 
   it('should respond with status 200 and return user data for /get-user-data', async () => {
-    const userEmail = 'test@example.com'; // Assuming this user exists in the test database
+    const userEmail = 'test@example.com';
     const response = await request.get(`/get-user-data?email=${userEmail}`);
     expect(response.status).toBe(200);
     expect(response.body.email).toBe(userEmail);
@@ -87,6 +91,4 @@ describe('Server Routes', () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
-
- 
 });
