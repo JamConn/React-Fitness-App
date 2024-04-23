@@ -45,7 +45,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'https://still-refuge-99244.herokuapp.com/auth/google/callback'
+  'https://still-refuge-99244-ad555b13e2bb.herokuapp.com/auth/google/callback'
 );
 
 
