@@ -12,4 +12,4 @@ const users = [
     // Add more sample users as needed
   ];
   
-  export default users;
+  module.exports = users;
