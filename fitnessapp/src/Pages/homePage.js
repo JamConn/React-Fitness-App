@@ -200,7 +200,7 @@ const Home = () => {
                 <h1>{userData.fullName}</h1>
                 <h2>{userData.email}</h2>
               </div>
-              <div style={{ paddingLeft: '40px', paddingTop: '20px', paddingBottom: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> 
+              <div style={{ paddingTop: '20px', paddingBottom: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> 
                 <div style={{ justifyContent: 'center', textAlign: 'center', border: '6px solid black', borderRadius: '50%', width: '200px', height: '200px', padding: '50px' }}>
                   <h1>Level</h1>
                   <h1>{userLevel}</h1>
